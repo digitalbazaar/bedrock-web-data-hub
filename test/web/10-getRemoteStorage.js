@@ -51,6 +51,18 @@ describe('getRemoteStorage', () => {
     doc.should.deep.equal(expected);
   });
 
+  it('should fail to get a non-existant document', async () => {
+    const remoteStorage = await getRemoteStorage({accountId: 'test'});
+    let err;
+    try {
+      await remoteStorage.get({id: 'doesNotExist'});
+    } catch(e) {
+      err = e;
+    }
+    should.exist(err);
+    err.name.should.equal('NotFoundError');
+  });
+
   it('should fail to insert a duplicate document', async () => {
     const remoteStorage = await getRemoteStorage({accountId: 'test'});
     const doc = {id: 'foo', someKey: 'someOtherValue'};
@@ -90,7 +102,6 @@ describe('getRemoteStorage', () => {
 
   it('should insert another document with attributes', async () => {
     const remoteStorage = await getRemoteStorage({accountId: 'test'});
-    remoteStorage.ensureIndex('indexedKey');
     const doc = {id: 'hasAttributes2', indexedKey: 'value2'};
     await remoteStorage.insert({doc});
   });

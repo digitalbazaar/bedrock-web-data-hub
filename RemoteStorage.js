@@ -69,7 +69,7 @@ export class RemoteStorage {
   }
 
   /**
-   * Gets the wrapped (password-encrypted) master key and unwraps it
+   * Gets the wrapped (password-encrypted) master key from and unwraps it
    * using the given password.
    *
    * @param password the password to use to unwrap the master key.
@@ -82,13 +82,28 @@ export class RemoteStorage {
     return MasterKey.unwrapWithPassword({password, jwe});
   }
 
-  async ensureIndex({attribute}) {
+  /**
+   * Ensures that future documents inserted or updated using this
+   * RemoteStorage instance will be indexed according to the given
+   * attribute, provided that they contain that attribute.
+   *
+   * @param attribute the attribute name.
+   */
+  ensureIndex({attribute}) {
     if(typeof attribute !== 'string') {
       throw new TypeError('"attribute" must be a string.');
     }
     this.indexes.add(attribute);
   }
 
+  /**
+   * Inserts a document into remote storage if it does not already exist. If
+   * a document matching its ID already exists, a `DuplicateError` is thrown.
+   *
+   * @param doc the document to insert.
+   *
+   * @return a Promise that resolves to `true` once the operation completes.
+   */
   async insert({doc}) {
     const encrypted = await this._encrypt(doc);
     try {
@@ -105,38 +120,113 @@ export class RemoteStorage {
     }
   }
 
+  /**
+   * Updates a document in remote storage. If the document does not already
+   * exist, it is created.
+   *
+   * @param doc the document to update.
+   *
+   * @return a Promise that resolves to `true` once the operation completes.
+   */
   async update({doc}) {
     const encrypted = await this._encrypt(doc);
     const url = `${this.urls.documents}/${encodeURIComponent(encrypted.id)}`;
-    const response = await axios.post(url, encrypted);
-    return response.data;
+    await axios.post(url, encrypted);
+    return true;
   }
 
+  /**
+   * Deletes a document from remote storage.
+   *
+   * @param doc the document to delete.
+   *
+   * @return a Promise that resolves to `true` once the operation completes.
+   */
   async delete({id}) {
     const url = `${this.urls.documents}/${encodeURIComponent(id)}`;
-    const response = await axios.delete(url);
-    return response.data;
+    await axios.delete(url);
+    return true;
   }
 
+  /**
+   * Gets a document from remote storage by its ID.
+   *
+   * @param id the ID of the document to get.
+   *
+   * @return a Promise that resolves to the document.
+   */
   async get({id}) {
     const masterKey = await this._getMasterKey();
     id = await this._blindId({id, masterKey});
     const url = `${this.urls.documents}/${encodeURIComponent(id)}`;
-    const response = await axios.get(url);
+    let response;
+    try {
+      response = await axios.get(url);
+    } catch(e) {
+      response = e.response || {};
+      if(response.status === 404) {
+        const err = new Error('Document not found');
+        err.name = 'NotFoundError';
+        throw err;
+      }
+      throw e;
+    }
     return this._decrypt(response.data);
   }
 
+  /**
+   * Finds documents based on their attributes. Currently, matching can be
+   * performed using an `equals` or a `has` filter (but not both at once).
+   *
+   * The `equals` filter is an object with key-value attribute pairs. Any
+   * document that matches *all* key-value attribute pairs will be returned. If
+   * equals is an array, it may contain multiple such filters -- whereby the
+   * results will be all documents that matched any one of the filters.
+   *
+   * The `has` filter is a string representing the attribute name or an
+   * array of such strings. If an array is used, then the results will only
+   * contain documents that possess *all* of the attributes listed.
+   *
+   * @param [equals] an object with key-value attribute pairs to match or an
+   *          array of such objects.
+   * @param [has] a string with an attribute name to match or an array of
+   *          such strings.
+   *
+   * @return a Promise that resolves to the matching documents.
+   */
   async find({equals, has}) {
-    // TODO: validate `equals` ... an array of objects w/key value pairs
-    // TODO: validate `has` ... an array of strings
-    // TODO: ensure ONLY `equals` or `has` is present
+    // validate params
+    if(equals === undefined && has === undefined) {
+      throw new Error('Either "equals" or "has" must be defined.');
+    }
+    if(equals !== undefined && has !== undefined) {
+      throw new Error('Only one of "equals" or "has" may be defined at once.');
+    }
+    if(equals !== undefined) {
+      if(Array.isArray(equals)) {
+        if(!equals.every(x => (x && typeof x === 'object'))) {
+          throw new TypeError('"equals" must be an array of objects.');
+        }
+      } else if(!(equals && typeof equals === 'object')) {
+        throw new TypeError('"equals" must be an object or an array of objects.');
+      }
+    }
+    if(has !== undefined) {
+      if(Array.isArray(has)) {
+        if(!has.every(x => (x && typeof x === 'string'))) {
+          throw new TypeError('"has" must be an array of strings.');
+        }
+      } else if(typeof has !== 'string') {
+        throw new TypeError('"has" must be a string or an array of strings.');
+      }
+    }
 
     const masterKey = await this._getMasterKey();
 
     const query = {};
 
-    // blind `equals` and `has`
     if(equals) {
+      // blind `equals`
       if(!Array.isArray(equals)) {
         equals = [equals];
       }
@@ -149,8 +239,8 @@ export class RemoteStorage {
         }
         return result;
       }));
-    }
-    if(has) {
+    } else if(has !== undefined) {
+      // blind `has`
       if(!Array.isArray(has)) {
         has = [has];
       }
@@ -164,6 +254,21 @@ export class RemoteStorage {
     return Promise.all(encryptedDocs.map(this._decrypt.bind(this)));
   }
 
+  /**
+   * Adds a `masterKeyRequest` event listener. This listener is responsible
+   * for providing the master key when the `masterKeyRequest` event is
+   * emitted. It is provided by passing a promise to `event.responseWith`
+   * that resolves to: `{masterKey, timeout}` where `timeout` is an optional
+   * timeout (in milliseconds) for caching the key. Once the timeout expires,
+   * the event will be emitted again should the master key be required for
+   * any operation.
+   *
+   * @param event the name of the event ("masterKeyRequest").
+   * @param listener a function that receives an `event` object when the
+   *          `masterKeyRequest` event is emitted.
+   *
+   * @return this RemoteStorage instance for chaining.
+   */
   on(event, listener) {
     if(event !== 'masterKeyRequest') {
       throw new Error('"event" must be "masterKeyRequest".');
@@ -173,8 +278,10 @@ export class RemoteStorage {
       throw new Error('Only one listener is permitted.');
     }
     this._listener = listener;
+    return this;
   }
 
+  // helper that blinds attributes using the master key
   async _blindAttribute({key, value, masterKey}) {
     value = JSON.stringify({key: value});
     const attrName = await masterKey.blind({data: key});
@@ -182,10 +289,12 @@ export class RemoteStorage {
     return {name: attrName, value: attrValue};
   }
 
+  // helper that blinds a document ID using the master key
   async _blindId({id, masterKey}) {
     return masterKey.blind({data: id});
   }
 
+  // helper that creates blinded attributes using the master key
   async _createAttributes({doc, masterKey}) {
     const attributes = [];
     for(const key in doc) {
@@ -197,6 +306,7 @@ export class RemoteStorage {
     return attributes;
   }
 
+  // helper that decrypts an encrypted doc to a clear doc
   async _decrypt(encryptedDoc) {
     // validate `encryptedDoc`
     if(!(encryptedDoc && typeof encryptedDoc === 'object' &&
@@ -209,10 +319,21 @@ export class RemoteStorage {
     // decrypt doc
     const masterKey = await this._getMasterKey();
     const {jwe} = encryptedDoc;
-    return masterKey.decryptObject({jwe});
+    const doc = await masterKey.decryptObject({jwe});
+    if(!(doc && typeof doc === 'object' && typeof doc.id === 'string')) {
+      throw new Error('Invalid decrypted document.');
+    }
+    return doc;
   }
 
+  // helper that creates an encrypted doc using a clear doc, including
+  // blinding its ID and any attributes for indexing
   async _encrypt(doc) {
+    if(!(doc && typeof doc === 'object' && typeof doc.id === 'string')) {
+      throw new TypeError(
+        '"doc" must be an object with an "id" string property.');
+    }
+
     const masterKey = await this._getMasterKey();
 
     // create encrypted doc ID, attributes, and jwe
@@ -227,6 +348,9 @@ export class RemoteStorage {
     return encryptedDocument;
   }
 
+  // helper that gets the master key for use in operations such as inserting
+  // docs, updating docs, etc. -- it will emit the `masterKeyRequest` event
+  // if no master key is cached and use then cache the result
   async _getMasterKey() {
     // return master key from cache if available
     if(this.keyCache.masterKey) {
@@ -236,7 +360,9 @@ export class RemoteStorage {
 
     // get master key via `MasterKeyRequest` event
     if(!this._listener) {
-      throw new Error('Master key not found.');
+      const err = new Error('Master key not found.');
+      err.name = 'NotFoundError';
+      throw err;
     }
     let result = Promise.resolve();
     const event = {
