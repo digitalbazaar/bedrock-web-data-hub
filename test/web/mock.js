@@ -196,7 +196,7 @@ class MockStorage {
   }
 
   find({index, key}) {
-    let docSet = index.get(key);
+    const docSet = index.get(key);
     if(!docSet) {
       return [];
     }
