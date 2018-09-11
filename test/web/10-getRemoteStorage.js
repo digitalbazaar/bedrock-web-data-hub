@@ -51,7 +51,7 @@ describe('getRemoteStorage', () => {
     doc.should.deep.equal(expected);
   });
 
-  it('should fail to get a non-existant document', async () => {
+  it('should fail to get a non-existent document', async () => {
     const remoteStorage = await getRemoteStorage({accountId: 'test'});
     let err;
     try {
@@ -82,6 +82,30 @@ describe('getRemoteStorage', () => {
     await remoteStorage.update({doc});
     const updated = await remoteStorage.get({id: doc.id});
     updated.should.deep.equal(doc);
+  });
+
+  it('should delete an existing document', async () => {
+    const remoteStorage = await getRemoteStorage({accountId: 'test'});
+    const result = await remoteStorage.delete({id: 'foo'});
+    result.should.equal(true);
+  });
+
+  it('should fail to get a deleted document', async () => {
+    const remoteStorage = await getRemoteStorage({accountId: 'test'});
+    let err;
+    try {
+      await remoteStorage.get({id: 'foo'});
+    } catch(e) {
+      err = e;
+    }
+    should.exist(err);
+    err.name.should.equal('NotFoundError');
+  });
+
+  it('should fail to delete a non-existent document', async () => {
+    const remoteStorage = await getRemoteStorage({accountId: 'test'});
+    const result = await remoteStorage.delete({id: 'foo'});
+    result.should.equal(false);
   });
 
   it('should insert a document with attributes', async () => {

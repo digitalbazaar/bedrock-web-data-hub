@@ -68,7 +68,7 @@ class MockStorage {
         return [304];
       }
       this.masterKey = JSON.parse(config.data);
-      return [200];
+      return [204];
     });
 
     mock.onGet(routes.masterKey).reply(() => {
@@ -108,6 +108,15 @@ class MockStorage {
         return [404];
       }
       return [200, JSON.stringify(this.documents.get(id))];
+    });
+
+    mock.onDelete(docIdRoute).reply(config => {
+      const [, id] = config.url.match(docIdRoute);
+      if(!this.documents.has(id)) {
+        return [404];
+      }
+      this.documents.delete(id);
+      return [204];
     });
 
     mock.onPost(routes.query).reply(config => {

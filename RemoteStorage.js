@@ -140,11 +140,20 @@ export class RemoteStorage {
    *
    * @param doc the document to delete.
    *
-   * @return a Promise that resolves to `true` once the operation completes.
+   * @return a Promise that resolves to `true` if the document was deleted
+   *         and `false` if it did not exist.
    */
   async delete({id}) {
-    const url = `${this.urls.documents}/${encodeURIComponent(id)}`;
-    await axios.delete(url);
+    const url = await this._getEncryptedDocUrl(id);
+    try {
+      await axios.delete(url);
+    } catch(e) {
+      const {response = {}} = e;
+      if(response.status === 404) {
+        return false;
+      }
+      throw e;
+    }
     return true;
   }
 
@@ -156,9 +165,7 @@ export class RemoteStorage {
    * @return a Promise that resolves to the document.
    */
   async get({id}) {
-    const masterKey = await this._getMasterKey();
-    id = await this._blindId({id, masterKey});
-    const url = `${this.urls.documents}/${encodeURIComponent(id)}`;
+    const url = await this._getEncryptedDocUrl(id);
     let response;
     try {
       response = await axios.get(url);
@@ -208,7 +215,8 @@ export class RemoteStorage {
           throw new TypeError('"equals" must be an array of objects.');
         }
       } else if(!(equals && typeof equals === 'object')) {
-        throw new TypeError('"equals" must be an object or an array of objects.');
+        throw new TypeError(
+          '"equals" must be an object or an array of objects.');
       }
     }
     if(has !== undefined) {
@@ -292,6 +300,13 @@ export class RemoteStorage {
   // helper that blinds a document ID using the master key
   async _blindId({id, masterKey}) {
     return masterKey.blind({data: id});
+  }
+
+  // helper that gets an encrypted document URL from a document ID
+  async _getEncryptedDocUrl(id) {
+    const masterKey = await this._getMasterKey();
+    id = await this._blindId({id, masterKey});
+    return `${this.urls.documents}/${encodeURIComponent(id)}`;
   }
 
   // helper that creates blinded attributes using the master key
