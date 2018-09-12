@@ -92,7 +92,7 @@ class MockStorage {
     const docIdRoute = new RegExp(
       `/private-storage/${accountId}/documents/([-_A-Za-z0-9]+)`);
 
-    mock.onPost(docIdRoute).reply(config => {
+    mock.onPut(docIdRoute).reply(config => {
       const encryptedDoc = JSON.parse(config.data);
       const [, id] = config.url.match(docIdRoute);
       if(id !== encryptedDoc.id) {

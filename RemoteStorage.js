@@ -131,7 +131,7 @@ export class RemoteStorage {
   async update({doc}) {
     const encrypted = await this._encrypt(doc);
     const url = `${this.urls.documents}/${encodeURIComponent(encrypted.id)}`;
-    await axios.post(url, encrypted);
+    await axios.put(url, encrypted);
     return true;
   }
 
