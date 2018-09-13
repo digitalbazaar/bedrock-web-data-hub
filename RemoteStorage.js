@@ -135,7 +135,7 @@ export class RemoteStorage {
   /**
    * Deletes a document from remote storage.
    *
-   * @param doc the document to delete.
+   * @param id the ID of the document to delete.
    *
    * @return a Promise that resolves to `true` if the document was deleted
    *         and `false` if it did not exist.
