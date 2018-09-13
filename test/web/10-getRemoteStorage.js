@@ -18,6 +18,15 @@ describe('getRemoteStorage', () => {
     remoteStorage.getMasterKey.should.be.a('function');
   });
 
+  it('should ensure two indexes', async () => {
+    const remoteStorage = await getRemoteStorage({accountId: 'test'});
+    remoteStorage.ensureIndex({attribute: ['index1', 'index2']});
+    remoteStorage.indexes.should.be.a('Set');
+    remoteStorage.indexes.size.should.equal(2);
+    remoteStorage.indexes.has('index1').should.equal(true);
+    remoteStorage.indexes.has('index2').should.equal(true);
+  });
+
   it('should create a master key', async () => {
     const remoteStorage = await getRemoteStorage({accountId: 'test'});
     const result = await remoteStorage.createMasterKey({password});
