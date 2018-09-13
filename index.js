@@ -18,8 +18,16 @@ export const getRemoteStorage = async ({accountId}) => {
     throw new TypeError('"accountId" must be a non-empty string.');
   }
   const id = `remoteStore.${accountId}`;
+
+  // try to return existing remote storage
+  let remoteStorage = await store.get({id});
+  if(remoteStorage) {
+    return remoteStorage;
+  }
+
+  // try to create remote storage
   try {
-    const remoteStorage = new RemoteStorage({accountId});
+    remoteStorage = new RemoteStorage({accountId});
     await store.create({id, object: remoteStorage});
     return remoteStorage;
   } catch(e) {
