@@ -84,13 +84,18 @@ export class RemoteStorage {
    * RemoteStorage instance will be indexed according to the given
    * attribute, provided that they contain that attribute.
    *
-   * @param attribute the attribute name.
+   * @param attribute the attribute name as a string or an array of attribute
+   *          names.
    */
   ensureIndex({attribute}) {
-    if(typeof attribute !== 'string') {
-      throw new TypeError('"attribute" must be a string.');
+    if(!Array.isArray(attribute)) {
+      attribute = [attribute];
     }
-    this.indexes.add(attribute);
+    if(!attribute.every(x => typeof x === 'string')) {
+      throw new TypeError(
+        '"attribute" must be a string or an array of strings.');
+    }
+    attribute.every(x => this.indexes.add(x));
   }
 
   /**
