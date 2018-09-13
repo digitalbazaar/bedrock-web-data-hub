@@ -8,7 +8,7 @@ import {KeyCache} from './KeyCache.js';
 import {MasterKey} from './MasterKey.js';
 
 export class RemoteStorage {
-  constructor({accountId, baseUrl = '/private-storage'} = {}) {
+  constructor({accountId, baseUrl = '/private-storage'}) {
     this.accountId = accountId;
     this.indexes = new Set();
     this.keyCache = new KeyCache();
