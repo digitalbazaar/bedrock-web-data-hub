@@ -28,6 +28,7 @@ export const getRemoteStorage = async ({accountId}) => {
   // try to create remote storage
   try {
     remoteStorage = new RemoteStorage({accountId});
+    remoteStorage.ensureIndex({attribute: 'type'});
     await store.create({id, object: remoteStorage});
     return remoteStorage;
   } catch(e) {
