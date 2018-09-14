@@ -13,11 +13,12 @@ describe('RemoteStorage', () => {
     mock.init();
   });
 
-  it('should ensure two indexes', async () => {
+  it('should ensure two new indexes', async () => {
     const remoteStorage = await getRemoteStorage({accountId: 'test'});
+    const indexCount = remoteStorage.indexes.size;
     remoteStorage.ensureIndex({attribute: ['index1', 'index2']});
     remoteStorage.indexes.should.be.a('Set');
-    remoteStorage.indexes.size.should.equal(2);
+    remoteStorage.indexes.size.should.equal(indexCount + 2);
     remoteStorage.indexes.has('index1').should.equal(true);
     remoteStorage.indexes.has('index2').should.equal(true);
   });
