@@ -315,9 +315,9 @@ export class RemoteStorage {
   async _createAttributes({doc, masterKey}) {
     const attributes = [];
     for(const key in doc) {
-      if(this.indexes.has(key)) {
-        attributes.push(await this._blindAttribute(
-          {key, value: doc[key], masterKey}));
+      const value = doc[key];
+      if(value !== undefined && this.indexes.has(key)) {
+        attributes.push(await this._blindAttribute({key, value, masterKey}));
       }
     }
     return attributes;
