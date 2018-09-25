@@ -3,6 +3,6 @@
     "crypto": true,
     "TextDecoder": true,
     "TextEncoder": true,
-    "Uint8Array8": true
+    "Uint8Array": true
   }
 }
