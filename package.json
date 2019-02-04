@@ -1,5 +1,5 @@
 {
-  "name": "bedrock-web-private-remote-storage",
+  "name": "bedrock-web-data-hub",
   "version": "0.1.0-0",
   "description": "Private remote storage for Bedrock Web apps",
   "main": "index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/digitalbazaar/bedrock-web-private-remote-storage"
+    "url": "https://github.com/digitalbazaar/bedrock-web-data-hub"
   },
   "keywords": [
     "bedrock"
@@ -20,9 +20,9 @@
     "url": "https://digitalbazaar.com"
   },
   "bugs": {
-    "url": "https://github.com/digitalbazaar/bedrock-web-private-remote-storage/issues"
+    "url": "https://github.com/digitalbazaar/bedrock-web-data-hub/issues"
   },
-  "homepage": "https://github.com/digitalbazaar/bedrock-web-private-remote-storage",
+  "homepage": "https://github.com/digitalbazaar/bedrock-web-data-hub",
   "bedrock": {
     "browserDependencies": "all",
     "manifest": {
