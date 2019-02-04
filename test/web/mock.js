@@ -3,7 +3,7 @@
  */
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import {MockStorage} from 'bedrock-web-mock-private-remote-storage';
+import {MockStorage} from 'bedrock-web-mock-data-hub-storage';
 
 export const mock = {};
 

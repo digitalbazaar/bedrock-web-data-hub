@@ -2,7 +2,7 @@
  * Copyright (c) 2018 Digital Bazaar, Inc. All rights reserved.
  */
 import {store, MemoryEngine} from 'bedrock-web-store';
-import {getRemoteStorage} from 'bedrock-web-private-remote-storage';
+import {getRemoteStorage} from 'bedrock-web-data-hub';
 import {mock} from './mock.js';
 
 const password = 'password';

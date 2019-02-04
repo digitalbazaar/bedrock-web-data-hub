@@ -1,5 +1,5 @@
 {
-  "name": "bedrock-web-private-remote-storage-test",
+  "name": "bedrock-web-data-hub-test",
   "version": "0.0.1-0",
   "description": "Bedrock Web private remote storage test",
   "private": true,
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/digitalbazaar/bedrock-web-private-remote-storage"
+    "url": "https://github.com/digitalbazaar/bedrock-web-data-hub"
   },
   "keywords": [
     "bedrock"
@@ -19,15 +19,15 @@
     "url": "https://digitalbazaar.com"
   },
   "bugs": {
-    "url": "https://github.com/digitalbazaar/bedrock-web-private-remote-storage/issues"
+    "url": "https://github.com/digitalbazaar/bedrock-web-data-hub/issues"
   },
-  "homepage": "https://github.com/digitalbazaar/bedrock-web-private-remote-storage",
+  "homepage": "https://github.com/digitalbazaar/bedrock-web-data-hub",
   "dependencies": {
     "axios-mock-adapter": "^1.15.0",
     "bedrock": "^1.0.0",
     "bedrock-karma": "^1.0.0",
     "bedrock-test": "^2.0.0",
-    "bedrock-web-mock-private-remote-storage": "^1.0.0",
-    "bedrock-web-private-remote-storage": "file:.."
+    "bedrock-web-mock-data-hub-storage": "^1.0.0",
+    "bedrock-web-data-hub": "file:.."
   }
 }
