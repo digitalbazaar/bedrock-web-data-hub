@@ -27,7 +27,7 @@
     "bedrock": "^1.0.0",
     "bedrock-karma": "^1.0.0",
     "bedrock-test": "^2.0.0",
-    "bedrock-web-mock-data-hub-storage": "^1.0.0",
+    "bedrock-web-mock-data-hub-storage": "https://github.com/digitalbazaar/bedrock-web-mock-data-hub-storage#dev",
     "bedrock-web-data-hub": "file:.."
   }
 }
