@@ -342,7 +342,7 @@ function _strToUint8Array(data) {
     // convert data to Uint8Array
     return new TextEncoder().encode(data);
   }
-  if(!(data instanceof Uint8Array8)) {
+  if(!(data instanceof Uint8Array)) {
     throw new TypeError('"data" be a string or Uint8Array.');
   }
   return data;

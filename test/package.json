@@ -23,11 +23,13 @@
   },
   "homepage": "https://github.com/digitalbazaar/bedrock-web-data-hub",
   "dependencies": {
-    "axios-mock-adapter": "^1.15.0",
     "bedrock": "^1.0.0",
     "bedrock-karma": "^1.0.0",
     "bedrock-test": "^2.0.0",
-    "bedrock-web-mock-data-hub-storage": "https://github.com/digitalbazaar/bedrock-web-mock-data-hub-storage#dev",
-    "bedrock-web-data-hub": "file:.."
+    "bedrock-web-data-hub": "file:..",
+    "bedrock-web-kms": "https://github.com/digitalbazaar/bedrock-web-kms#initial",
+    "bedrock-web-mock-data-hub-storage": "https://github.com/digitalbazaar/bedrock-web-mock-data-hub-storage#refactor",
+    "bedrock-web-mock-kms-http": "https://github.com/digitalbazaar/bedrock-web-mock-kms-http#initial",
+    "pretender": "^2.1.1"
   }
 }
