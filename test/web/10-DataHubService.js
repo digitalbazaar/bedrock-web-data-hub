@@ -17,6 +17,7 @@ describe('DataHubService', () => {
     const {kek, hmac} = mock.keys;
     const config = await dhs.create({
       config: {
+        sequence: 0,
         controller: mock.accountId,
         kek: {id: kek.id, algorithm: kek.algorithm},
         hmac: {id: hmac.id, algorithm: hmac.algorithm}
@@ -34,6 +35,7 @@ describe('DataHubService', () => {
     const {kek, hmac} = mock.keys;
     const {id} = await dhs.create({
       config: {
+        sequence: 0,
         controller: mock.accountId,
         kek: {id: kek.id, algorithm: kek.algorithm},
         hmac: {id: hmac.id, algorithm: hmac.algorithm}
@@ -52,6 +54,7 @@ describe('DataHubService', () => {
     const {kek, hmac} = mock.keys;
     const config = await dhs.create({
       config: {
+        sequence: 0,
         controller: mock.accountId,
         kek: {id: kek.id, algorithm: kek.algorithm},
         hmac: {id: hmac.id, algorithm: hmac.algorithm},
