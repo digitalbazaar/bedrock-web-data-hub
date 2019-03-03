@@ -1,7 +1,7 @@
 {
   "name": "bedrock-web-data-hub-test",
   "version": "0.0.1-0",
-  "description": "Bedrock Web private remote storage test",
+  "description": "Bedrock Web data hub test",
   "private": true,
   "scripts": {
     "test": "node --preserve-symlinks test.js test --framework karma"
