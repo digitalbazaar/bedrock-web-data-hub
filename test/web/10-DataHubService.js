@@ -17,15 +17,66 @@ describe('DataHubService', () => {
     const {kek, hmac} = mock.keys;
     const config = await dhs.create({
       config: {
+        controller: mock.accountId,
         kek: {id: kek.id, algorithm: kek.algorithm},
         hmac: {id: hmac.id, algorithm: hmac.algorithm}
       }
     });
     config.should.be.an('object');
     config.id.should.be.a('string');
+    config.controller.should.equal(mock.accountId);
     config.kek.should.be.an('object');
     config.hmac.should.be.an('object');
   });
 
-  // TODO: add more tests: get, getPrimary, getAll, update, setStatus
+  it('should get data hub storage', async () => {
+    const dhs = new DataHubService();
+    const {kek, hmac} = mock.keys;
+    const {id} = await dhs.create({
+      config: {
+        controller: mock.accountId,
+        kek: {id: kek.id, algorithm: kek.algorithm},
+        hmac: {id: hmac.id, algorithm: hmac.algorithm}
+      }
+    });
+    const config = await dhs.get({id});
+    config.should.be.an('object');
+    config.id.should.be.a('string');
+    config.controller.should.equal(mock.accountId);
+    config.kek.should.be.an('object');
+    config.hmac.should.be.an('object');
+  });
+
+  it('should create primary data hub storage', async () => {
+    const dhs = new DataHubService();
+    const {kek, hmac} = mock.keys;
+    const config = await dhs.create({
+      config: {
+        controller: mock.accountId,
+        kek: {id: kek.id, algorithm: kek.algorithm},
+        hmac: {id: hmac.id, algorithm: hmac.algorithm},
+        primary: true
+      }
+    });
+    config.should.be.an('object');
+    config.id.should.be.a('string');
+    config.controller.should.equal(mock.accountId);
+    config.kek.should.be.an('object');
+    config.hmac.should.be.an('object');
+  });
+
+  it('should get primary data hub storage', async () => {
+    // Note: depends on previous test that created primary data hub
+    // could alternatively change `before/after` to `beforeEach/afterEach`
+    // to enable creating multiple primary data hubs
+    const dhs = new DataHubService();
+    const config = await dhs.getPrimary({controller: mock.accountId});
+    config.should.be.an('object');
+    config.id.should.be.a('string');
+    config.controller.should.equal(mock.accountId);
+    config.kek.should.be.an('object');
+    config.hmac.should.be.an('object');
+  });
+
+  // TODO: add more tests: getAll, update, setStatus
 });
