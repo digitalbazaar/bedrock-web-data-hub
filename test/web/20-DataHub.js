@@ -32,34 +32,34 @@ describe('DataHub', () => {
   it('should insert a document', async () => {
     const dataHub = await mock.createDataHub();
     const doc = {id: 'foo', content: {someKey: 'someValue'}};
-    const encrypted = await dataHub.insert({doc});
-    should.exist(encrypted);
-    encrypted.should.be.an('object');
-    encrypted.id.should.equal('foo');
-    encrypted.sequence.should.equal(0);
-    encrypted.indexed.should.be.an('array');
-    encrypted.indexed.length.should.equal(1);
-    encrypted.indexed[0].should.be.an('object');
-    encrypted.indexed[0].sequence.should.equal(0);
-    encrypted.indexed[0].hmac.should.be.an('object');
-    encrypted.indexed[0].hmac.should.deep.equal({
+    const inserted = await dataHub.insert({doc});
+    should.exist(inserted);
+    inserted.should.be.an('object');
+    inserted.id.should.equal('foo');
+    inserted.sequence.should.equal(0);
+    inserted.indexed.should.be.an('array');
+    inserted.indexed.length.should.equal(1);
+    inserted.indexed[0].should.be.an('object');
+    inserted.indexed[0].sequence.should.equal(0);
+    inserted.indexed[0].hmac.should.be.an('object');
+    inserted.indexed[0].hmac.should.deep.equal({
       id: dataHub.indexHelper.hmac.id,
       algorithm: dataHub.indexHelper.hmac.algorithm
     });
-    encrypted.indexed[0].attributes.should.be.an('array');
-    encrypted.jwe.should.be.an('object');
-    encrypted.jwe.protected.should.be.a('string');
-    encrypted.jwe.recipients.should.be.an('array');
-    encrypted.jwe.recipients.length.should.equal(1);
-    encrypted.jwe.recipients[0].should.be.an('object');
-    encrypted.jwe.recipients[0].header.should.deep.equal({
+    inserted.indexed[0].attributes.should.be.an('array');
+    inserted.jwe.should.be.an('object');
+    inserted.jwe.protected.should.be.a('string');
+    inserted.jwe.recipients.should.be.an('array');
+    inserted.jwe.recipients.length.should.equal(1);
+    inserted.jwe.recipients[0].should.be.an('object');
+    inserted.jwe.recipients[0].header.should.deep.equal({
       kid: dataHub.kek.id,
       alg: dataHub.kek.algorithm
     });
-    encrypted.jwe.iv.should.be.a('string');
-    encrypted.jwe.ciphertext.should.be.a('string');
-    encrypted.jwe.tag.should.be.a('string');
-    encrypted.content.should.deep.equal({someKey: 'someValue'});
+    inserted.jwe.iv.should.be.a('string');
+    inserted.jwe.ciphertext.should.be.a('string');
+    inserted.jwe.tag.should.be.a('string');
+    inserted.content.should.deep.equal({someKey: 'someValue'});
   });
 
   it('should get a document', async () => {
@@ -67,33 +67,33 @@ describe('DataHub', () => {
     const doc = {id: 'foo', content: {someKey: 'someValue'}};
     await dataHub.insert({doc});
     const expected = {id: 'foo', content: {someKey: 'someValue'}};
-    const encrypted = await dataHub.get({id: expected.id});
-    encrypted.should.be.an('object');
-    encrypted.id.should.equal('foo');
-    encrypted.sequence.should.equal(0);
-    encrypted.indexed.should.be.an('array');
-    encrypted.indexed.length.should.equal(1);
-    encrypted.indexed[0].should.be.an('object');
-    encrypted.indexed[0].sequence.should.equal(0);
-    encrypted.indexed[0].hmac.should.be.an('object');
-    encrypted.indexed[0].hmac.should.deep.equal({
+    const decrypted = await dataHub.get({id: expected.id});
+    decrypted.should.be.an('object');
+    decrypted.id.should.equal('foo');
+    decrypted.sequence.should.equal(0);
+    decrypted.indexed.should.be.an('array');
+    decrypted.indexed.length.should.equal(1);
+    decrypted.indexed[0].should.be.an('object');
+    decrypted.indexed[0].sequence.should.equal(0);
+    decrypted.indexed[0].hmac.should.be.an('object');
+    decrypted.indexed[0].hmac.should.deep.equal({
       id: dataHub.indexHelper.hmac.id,
       algorithm: dataHub.indexHelper.hmac.algorithm
     });
-    encrypted.indexed[0].attributes.should.be.an('array');
-    encrypted.jwe.should.be.an('object');
-    encrypted.jwe.protected.should.be.a('string');
-    encrypted.jwe.recipients.should.be.an('array');
-    encrypted.jwe.recipients.length.should.equal(1);
-    encrypted.jwe.recipients[0].should.be.an('object');
-    encrypted.jwe.recipients[0].header.should.deep.equal({
+    decrypted.indexed[0].attributes.should.be.an('array');
+    decrypted.jwe.should.be.an('object');
+    decrypted.jwe.protected.should.be.a('string');
+    decrypted.jwe.recipients.should.be.an('array');
+    decrypted.jwe.recipients.length.should.equal(1);
+    decrypted.jwe.recipients[0].should.be.an('object');
+    decrypted.jwe.recipients[0].header.should.deep.equal({
       kid: dataHub.kek.id,
       alg: dataHub.kek.algorithm
     });
-    encrypted.jwe.iv.should.be.a('string');
-    encrypted.jwe.ciphertext.should.be.a('string');
-    encrypted.jwe.tag.should.be.a('string');
-    encrypted.content.should.deep.equal(expected.content);
+    decrypted.jwe.iv.should.be.a('string');
+    decrypted.jwe.ciphertext.should.be.a('string');
+    decrypted.jwe.tag.should.be.a('string');
+    decrypted.content.should.deep.equal(expected.content);
   });
 
   it('should fail to get a non-existent document', async () => {
@@ -126,34 +126,34 @@ describe('DataHub', () => {
   it('should upsert a document', async () => {
     const dataHub = await mock.createDataHub();
     const doc = {id: 'foo', content: {someKey: 'someValue'}};
-    const encrypted = await dataHub.update({doc});
-    should.exist(encrypted);
-    encrypted.should.be.an('object');
-    encrypted.id.should.equal('foo');
-    encrypted.sequence.should.equal(0);
-    encrypted.indexed.should.be.an('array');
-    encrypted.indexed.length.should.equal(1);
-    encrypted.indexed[0].should.be.an('object');
-    encrypted.indexed[0].sequence.should.equal(0);
-    encrypted.indexed[0].hmac.should.be.an('object');
-    encrypted.indexed[0].hmac.should.deep.equal({
+    const updated = await dataHub.update({doc});
+    should.exist(updated);
+    updated.should.be.an('object');
+    updated.id.should.equal('foo');
+    updated.sequence.should.equal(0);
+    updated.indexed.should.be.an('array');
+    updated.indexed.length.should.equal(1);
+    updated.indexed[0].should.be.an('object');
+    updated.indexed[0].sequence.should.equal(0);
+    updated.indexed[0].hmac.should.be.an('object');
+    updated.indexed[0].hmac.should.deep.equal({
       id: dataHub.indexHelper.hmac.id,
       algorithm: dataHub.indexHelper.hmac.algorithm
     });
-    encrypted.indexed[0].attributes.should.be.an('array');
-    encrypted.jwe.should.be.an('object');
-    encrypted.jwe.protected.should.be.a('string');
-    encrypted.jwe.recipients.should.be.an('array');
-    encrypted.jwe.recipients.length.should.equal(1);
-    encrypted.jwe.recipients[0].should.be.an('object');
-    encrypted.jwe.recipients[0].header.should.deep.equal({
+    updated.indexed[0].attributes.should.be.an('array');
+    updated.jwe.should.be.an('object');
+    updated.jwe.protected.should.be.a('string');
+    updated.jwe.recipients.should.be.an('array');
+    updated.jwe.recipients.length.should.equal(1);
+    updated.jwe.recipients[0].should.be.an('object');
+    updated.jwe.recipients[0].header.should.deep.equal({
       kid: dataHub.kek.id,
       alg: dataHub.kek.algorithm
     });
-    encrypted.jwe.iv.should.be.a('string');
-    encrypted.jwe.ciphertext.should.be.a('string');
-    encrypted.jwe.tag.should.be.a('string');
-    encrypted.content.should.deep.equal({someKey: 'someValue'});
+    updated.jwe.iv.should.be.a('string');
+    updated.jwe.ciphertext.should.be.a('string');
+    updated.jwe.tag.should.be.a('string');
+    updated.content.should.deep.equal({someKey: 'someValue'});
   });
 
   it('should update an existing document', async () => {
@@ -192,17 +192,17 @@ describe('DataHub', () => {
     version2.content.should.deep.equal({someKey: 'aNewValue'});
   });
 
-  /*it('should delete an existing document', async () => {
-    const remoteStorage = await getRemoteStorage({accountId: 'test'});
-    const result = await remoteStorage.delete({id: 'foo'});
+  it('should delete an existing document', async () => {
+    const dataHub = await mock.createDataHub();
+    const doc = {id: 'foo', content: {someKey: 'someValue'}};
+    await dataHub.insert({doc});
+    const decrypted = await dataHub.get({id: doc.id});
+    decrypted.should.be.an('object');
+    const result = await dataHub.delete({id: doc.id});
     result.should.equal(true);
-  });
-
-  it('should fail to get a deleted document', async () => {
-    const remoteStorage = await getRemoteStorage({accountId: 'test'});
     let err;
     try {
-      await remoteStorage.get({id: 'foo'});
+      await dataHub.get({id: doc.id});
     } catch(e) {
       err = e;
     }
@@ -211,130 +211,139 @@ describe('DataHub', () => {
   });
 
   it('should fail to delete a non-existent document', async () => {
-    const remoteStorage = await getRemoteStorage({accountId: 'test'});
-    const result = await remoteStorage.delete({id: 'foo'});
+    const dataHub = await mock.createDataHub();
+    const result = await dataHub.delete({id: 'foo'});
     result.should.equal(false);
   });
 
   it('should insert a document with attributes', async () => {
-    const remoteStorage = await getRemoteStorage({accountId: 'test'});
-    remoteStorage.ensureIndex({attribute: 'indexedKey'});
-    const doc = {id: 'hasAttributes1', indexedKey: 'value1'};
-    await remoteStorage.insert({doc});
+    const dataHub = await mock.createDataHub();
+    dataHub.ensureIndex({attribute: 'indexedKey'});
+    const doc = {id: 'hasAttributes1', content: {indexedKey: 'value1'}};
+    await dataHub.insert({doc});
+    const decrypted = await dataHub.get({id: doc.id});
+    should.exist(decrypted);
+    decrypted.should.be.an('object');
+    decrypted.id.should.equal('hasAttributes1');
+    decrypted.sequence.should.equal(0);
+    decrypted.indexed.should.be.an('array');
+    decrypted.indexed.length.should.equal(1);
+    decrypted.indexed[0].should.be.an('object');
+    decrypted.indexed[0].sequence.should.equal(0);
+    decrypted.indexed[0].hmac.should.be.an('object');
+    decrypted.indexed[0].hmac.should.deep.equal({
+      id: dataHub.indexHelper.hmac.id,
+      algorithm: dataHub.indexHelper.hmac.algorithm
+    });
+    decrypted.indexed[0].attributes.should.be.an('array');
+    decrypted.indexed[0].attributes.length.should.equal(1);
+    decrypted.indexed[0].attributes[0].should.be.an('object');
+    decrypted.indexed[0].attributes[0].name.should.be.a('string');
+    decrypted.indexed[0].attributes[0].value.should.be.a('string');
+    decrypted.jwe.should.be.an('object');
+    decrypted.jwe.protected.should.be.a('string');
+    decrypted.jwe.recipients.should.be.an('array');
+    decrypted.jwe.recipients.length.should.equal(1);
+    decrypted.jwe.recipients[0].should.be.an('object');
+    decrypted.jwe.recipients[0].header.should.deep.equal({
+      kid: dataHub.kek.id,
+      alg: dataHub.kek.algorithm
+    });
+    decrypted.jwe.iv.should.be.a('string');
+    decrypted.jwe.ciphertext.should.be.a('string');
+    decrypted.jwe.tag.should.be.a('string');
+    decrypted.content.should.deep.equal({indexedKey: 'value1'});
   });
 
   it('should find a document that has an attribute', async () => {
-    const remoteStorage = await getRemoteStorage({accountId: 'test'});
-    const expected = {id: 'hasAttributes1', indexedKey: 'value1'};
-    const docs = await remoteStorage.find({has: 'indexedKey'});
+    const dataHub = await mock.createDataHub();
+    dataHub.ensureIndex({attribute: 'indexedKey'});
+    const doc = {id: 'hasAttributes1', content: {indexedKey: 'value1'}};
+    await dataHub.insert({doc});
+    const docs = await dataHub.find({has: 'indexedKey'});
     docs.should.be.an('array');
     docs.length.should.equal(1);
-    docs[0].should.deep.equal(expected);
+    const decrypted = docs[0];
+    decrypted.should.be.an('object');
+    decrypted.id.should.equal('hasAttributes1');
+    decrypted.sequence.should.equal(0);
+    decrypted.indexed.should.be.an('array');
+    decrypted.indexed.length.should.equal(1);
+    decrypted.indexed[0].should.be.an('object');
+    decrypted.indexed[0].sequence.should.equal(0);
+    decrypted.indexed[0].hmac.should.be.an('object');
+    decrypted.indexed[0].hmac.should.deep.equal({
+      id: dataHub.indexHelper.hmac.id,
+      algorithm: dataHub.indexHelper.hmac.algorithm
+    });
+    decrypted.indexed[0].attributes.should.be.an('array');
+    decrypted.indexed[0].attributes.length.should.equal(1);
+    decrypted.indexed[0].attributes[0].should.be.an('object');
+    decrypted.indexed[0].attributes[0].name.should.be.a('string');
+    decrypted.indexed[0].attributes[0].value.should.be.a('string');
+    decrypted.jwe.should.be.an('object');
+    decrypted.jwe.protected.should.be.a('string');
+    decrypted.jwe.recipients.should.be.an('array');
+    decrypted.jwe.recipients.length.should.equal(1);
+    decrypted.jwe.recipients[0].should.be.an('object');
+    decrypted.jwe.recipients[0].header.should.deep.equal({
+      kid: dataHub.kek.id,
+      alg: dataHub.kek.algorithm
+    });
+    decrypted.jwe.iv.should.be.a('string');
+    decrypted.jwe.ciphertext.should.be.a('string');
+    decrypted.jwe.tag.should.be.a('string');
+    decrypted.content.should.deep.equal({indexedKey: 'value1'});
   });
 
   it('should insert another document with attributes', async () => {
-    const remoteStorage = await getRemoteStorage({accountId: 'test'});
-    const doc = {id: 'hasAttributes2', indexedKey: 'value2'};
-    await remoteStorage.insert({doc});
+    const dataHub = await mock.createDataHub();
+    const doc = {id: 'hasAttributes2', content: {indexedKey: 'value2'}};
+    await dataHub.insert({doc});
   });
 
   it('should find two documents with an attribute', async () => {
-    const remoteStorage = await getRemoteStorage({accountId: 'test'});
-    const expected = [
-      {id: 'hasAttributes1', indexedKey: 'value1'},
-      {id: 'hasAttributes2', indexedKey: 'value2'}
-    ];
-    const docs = await remoteStorage.find({has: 'indexedKey'});
+    const dataHub = await mock.createDataHub();
+    dataHub.ensureIndex({attribute: 'indexedKey'});
+    const doc1 = {id: 'hasAttributes1', content: {indexedKey: 'value1'}};
+    const doc2 = {id: 'hasAttributes2', content: {indexedKey: 'value2'}};
+    await dataHub.insert({doc: doc1});
+    await dataHub.insert({doc: doc2});
+    const docs = await dataHub.find({has: 'indexedKey'});
     docs.should.be.an('array');
     docs.length.should.equal(2);
-    docs.should.deep.include(expected[0]);
-    docs.should.deep.include(expected[1]);
+    docs[0].should.be.an('object');
+    docs[1].should.be.an('object');
+    docs[0].content.should.deep.equal({indexedKey: 'value1'});
+    docs[1].content.should.deep.equal({indexedKey: 'value2'});
   });
 
   it('should find a document that has an attribute value', async () => {
-    const remoteStorage = await getRemoteStorage({accountId: 'test'});
-    const expected = {id: 'hasAttributes1', indexedKey: 'value1'};
-    const docs = await remoteStorage.find({equals: {indexedKey: 'value1'}});
+    const dataHub = await mock.createDataHub();
+    dataHub.ensureIndex({attribute: 'indexedKey'});
+    const expected = {id: 'hasAttributes1', content: {indexedKey: 'value1'}};
+    await dataHub.insert({doc: expected});
+    const docs = await dataHub.find({equals: {indexedKey: 'value1'}});
     docs.should.be.an('array');
     docs.length.should.equal(1);
-    docs[0].should.deep.equal(expected);
+    docs[0].should.be.an('object');
+    docs[0].content.should.deep.equal(expected.content);
   });
 
   it('should find two documents with attribute values', async () => {
-    const remoteStorage = await getRemoteStorage({accountId: 'test'});
-    const expected = [
-      {id: 'hasAttributes1', indexedKey: 'value1'},
-      {id: 'hasAttributes2', indexedKey: 'value2'}
-    ];
-    const docs = await remoteStorage.find({
+    const dataHub = await mock.createDataHub();
+    dataHub.ensureIndex({attribute: 'indexedKey'});
+    const doc1 = {id: 'hasAttributes1', content: {indexedKey: 'value1'}};
+    const doc2 = {id: 'hasAttributes2', content: {indexedKey: 'value2'}};
+    await dataHub.insert({doc: doc1});
+    await dataHub.insert({doc: doc2});
+    const docs = await dataHub.find({
       equals: [{indexedKey: 'value1'}, {indexedKey: 'value2'}]});
     docs.should.be.an('array');
     docs.length.should.equal(2);
-    docs.should.deep.include(expected[0]);
-    docs.should.deep.include(expected[1]);
+    docs[0].should.be.an('object');
+    docs[1].should.be.an('object');
+    docs[0].content.should.deep.equal({indexedKey: 'value1'});
+    docs[1].content.should.deep.equal({indexedKey: 'value2'});
   });
-
-  it('should fail to create another master key for `static`', async () => {
-    const remoteStorage = await getRemoteStorage({accountId: 'static'});
-    let err;
-    try {
-      await remoteStorage.createMasterKey({password});
-    } catch(e) {
-      err = e;
-    }
-    should.exist(err);
-    err.name.should.equal('DuplicateError');
-  });
-
-  it('should fail to get a document without a master key', async () => {
-    const remoteStorage = await getRemoteStorage({accountId: 'static'});
-    const expected = {id: 'foo', someKey: 'someValue'};
-    let err;
-    try {
-      await remoteStorage.get({id: expected.id});
-    } catch(e) {
-      err = e;
-    }
-    should.exist(err);
-    err.message.should.equal('Master key not found.');
-  });
-
-  it('should fail to insert a document with no master key', async () => {
-    const remoteStorage = await getRemoteStorage({accountId: 'static'});
-    const doc = {id: 'bar', someKey: 'someValue'};
-    let err;
-    try {
-      await remoteStorage.insert({doc});
-    } catch(e) {
-      err = e;
-    }
-    should.exist(err);
-    err.message.should.equal('Master key not found.');
-  });
-
-  it('should insert a document after unwrapping master key', async () => {
-    const remoteStorage = await getRemoteStorage({accountId: 'static'});
-    const doc = {id: 'bar', someKey: 'someValue'};
-    remoteStorage.on('masterKeyRequest', event => {
-      event.respondWith((async () => {
-        const masterKey = await remoteStorage.getMasterKey({password});
-        return {masterKey};
-      })());
-    });
-    await remoteStorage.insert({doc});
-  });
-
-  it('should get an inserted document', async () => {
-    const remoteStorage = await getRemoteStorage({accountId: 'static'});
-    const expected = {id: 'bar', someKey: 'someValue'};
-    const doc = await remoteStorage.get({id: expected.id});
-    doc.should.deep.equal(expected);
-  });
-
-  it('should get a static document', async () => {
-    const remoteStorage = await getRemoteStorage({accountId: 'static'});
-    const expected = {id: 'foo', someKey: 'someValue'};
-    const doc = await remoteStorage.get({id: expected.id});
-    doc.should.deep.equal(expected);
-  });*/
 });
