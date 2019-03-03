@@ -156,7 +156,7 @@ export class DataHub {
   }
 
   /**
-   * Gets a document from remote storage by its ID.
+   * Gets a document from data hub storage by its ID.
    *
    * @param {String} id the ID of the document to get.
    *

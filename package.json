@@ -1,7 +1,7 @@
 {
   "name": "bedrock-web-data-hub",
   "version": "0.1.0-0",
-  "description": "Private remote storage for Bedrock Web apps",
+  "description": "Data hubs for Bedrock Web apps",
   "main": "index.js",
   "dependencies": {
     "@stablelib/chacha20poly1305": "^0.10.2",
