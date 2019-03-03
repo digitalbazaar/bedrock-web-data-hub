@@ -65,6 +65,7 @@ mock.createDataHub = async (
   const dhs = new DataHubService();
   const {kek, hmac} = mock.keys;
   let config = {
+    sequence: 0,
     controller,
     kek: {id: kek.id, algorithm: kek.algorithm},
     hmac: {id: hmac.id, algorithm: hmac.algorithm}
