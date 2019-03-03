@@ -24,6 +24,13 @@ export class DataHubService {
    * @description returns the configuration for the newly created data hub.
    */
   async create({url = this.config.urls.base, config}) {
+    // TODO: more robustly validate `config` (`kek`, `hmac`, if present, etc.)
+    if(!(config && typeof config === 'object')) {
+      throw new TypeError('"config" must be an object.');
+    }
+    if(!(config.controller && typeof config.controller === 'string')) {
+      throw new TypeError('"controller" must be a string.');
+    }
     const response = await axios.post(url, config, {headers});
     return response.data;
   }
@@ -48,8 +55,8 @@ export class DataHubService {
    * @description returns a controller's primary data hub.
    */
   async getPrimary({baseUrl = this.config.urls.base, controller}) {
-    const {data} = await this.getAll({baseUrl, controller, primary: true});
-    return data[0] || null;
+    const results = await this.getAll({baseUrl, controller, primary: true});
+    return results[0] || null;
   }
 
   /**

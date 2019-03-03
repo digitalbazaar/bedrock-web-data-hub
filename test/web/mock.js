@@ -12,6 +12,8 @@ export const mock = {};
 // TODO: add some static data to test against
 
 mock.init = async () => {
+  const accountId = mock.accountId = 'test';
+
   // create mock server
   const server = mock.server = new Pretender();
   // FIXME: there is special behavior here that the Mock* classes rely on;
@@ -39,7 +41,7 @@ mock.init = async () => {
   mock.kms = new MockKmsService({server});
 
   // mock data hub storage
-  mock.dataHubStorage = new MockStorage({server});
+  mock.dataHubStorage = new MockStorage({server, controller: accountId});
 
   // only init keys once
   if(!mock.keys) {
@@ -47,7 +49,6 @@ mock.init = async () => {
     mock.keys = {};
 
     // account master key for using KMS
-    const accountId = 'test';
     const secret = 'bcrypt of password';
     const kmsService = new KmsService();
     mock.keys.master = await AccountMasterKey.fromSecret(
@@ -59,10 +60,12 @@ mock.init = async () => {
   }
 };
 
-mock.createDataHub = async ({primary = false} = {}) => {
+mock.createDataHub = async (
+  {controller = mock.accountId, primary = false} = {}) => {
   const dhs = new DataHubService();
   const {kek, hmac} = mock.keys;
   let config = {
+    controller,
     kek: {id: kek.id, algorithm: kek.algorithm},
     hmac: {id: hmac.id, algorithm: hmac.algorithm}
   };
