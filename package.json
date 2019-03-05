@@ -29,6 +29,11 @@
     "manifest": {
       "axios": {
         "main": "dist/axios.min.js"
+      },
+      "base64url-universal": {
+        "bedrock": {
+          "browserDependencies": []
+        }
       }
     }
   }
