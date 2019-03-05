@@ -25,7 +25,17 @@
   },
   "homepage": "https://github.com/digitalbazaar/bedrock-web-data-hub",
   "bedrock": {
-    "browserDependencies": "all",
+    "browserDependencies": [
+      "@stablelib/binary",
+      "@stablelib/chacha",
+      "@stablelib/chacha20poly1305",
+      "@stablelib/constant-time",
+      "@stablelib/int",
+      "@stablelib/poly1305",
+      "@stablelib/wipe",
+      "axios",
+      "base64url-universal"
+    ],
     "manifest": {
       "axios": {
         "main": "dist/axios.min.js"
@@ -33,7 +43,8 @@
       "base64url-universal": {
         "bedrock": {
           "browserDependencies": []
-        }
+        },
+        "browser": "lib/browser.js"
       }
     }
   }
