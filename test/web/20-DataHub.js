@@ -23,7 +23,7 @@ describe('DataHub', () => {
     const {indexHelper} = dataHub;
     const indexCount = indexHelper.indexes.size;
     dataHub.ensureIndex({attribute: ['index1', 'index2']});
-    indexHelper.indexes.should.be.a('Set');
+    indexHelper.indexes.should.be.a('Map');
     indexHelper.indexes.size.should.equal(indexCount + 2);
     indexHelper.indexes.has('index1').should.equal(true);
     indexHelper.indexes.has('index2').should.equal(true);
@@ -255,6 +255,22 @@ describe('DataHub', () => {
     decrypted.content.should.deep.equal({indexedKey: 'value1'});
   });
 
+  it('should reject two documents with same unique attribute', async () => {
+    const dataHub = await mock.createDataHub();
+    dataHub.ensureIndex({attribute: 'uniqueKey', unique: true});
+    const doc1 = {id: 'hasAttributes1', content: {uniqueKey: 'value1'}};
+    const doc2 = {id: 'hasAttributes2', content: {uniqueKey: 'value1'}};
+    await dataHub.insert({doc: doc1});
+    let err;
+    try {
+      await dataHub.insert({doc: doc2});
+    } catch(e) {
+      err = e;
+    }
+    should.exist(err);
+    err.name.should.equal('DuplicateError');
+  });
+
   it('should find a document that has an attribute', async () => {
     const dataHub = await mock.createDataHub();
     dataHub.ensureIndex({attribute: 'indexedKey'});
@@ -294,12 +310,6 @@ describe('DataHub', () => {
     decrypted.jwe.ciphertext.should.be.a('string');
     decrypted.jwe.tag.should.be.a('string');
     decrypted.content.should.deep.equal({indexedKey: 'value1'});
-  });
-
-  it('should insert another document with attributes', async () => {
-    const dataHub = await mock.createDataHub();
-    const doc = {id: 'hasAttributes2', content: {indexedKey: 'value2'}};
-    await dataHub.insert({doc});
   });
 
   it('should find two documents with an attribute', async () => {

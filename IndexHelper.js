@@ -20,7 +20,7 @@ export class IndexHelper {
         '"hmac" must be an object with "id", "sign", and "verify" properties.');
     }
     this.hmac = hmac;
-    this.indexes = new Set();
+    this.indexes = new Map();
   }
 
   /**
@@ -30,8 +30,10 @@ export class IndexHelper {
    *
    * @param {Array|Object} attribute the attribute name or an array of
    *   attribute names.
+   * @param {Boolean} unique `true` if attribute values should be considered
+   *   unique, `false` if not (default: `false`).
    */
-  ensureIndex({attribute}) {
+  ensureIndex({attribute, unique = false}) {
     if(!Array.isArray(attribute)) {
       attribute = [attribute];
     }
@@ -39,7 +41,7 @@ export class IndexHelper {
       throw new TypeError(
         '"attribute" must be a string or an array of strings.');
     }
-    attribute.forEach(x => this.indexes.add(x));
+    attribute.forEach(x => this.indexes.set(x, unique));
   }
 
   /**
@@ -65,10 +67,10 @@ export class IndexHelper {
     // blind all attributes specifies in current index set
     const {content} = doc;
     const blindOps = [];
-    for(const key of indexes) {
+    for(const [key, unique] of indexes.entries()) {
       const value = content[key];
       if(value !== undefined) {
-        blindOps.push(this._blindAttribute({key, value}));
+        blindOps.push(this._blindAttribute({key, value, unique}));
       }
     }
     entry.attributes = await Promise.all(blindOps);
@@ -177,20 +179,9 @@ export class IndexHelper {
         has = [has];
       }
       query.has = await Promise.all(
-        has.map(key => this._blindAttributeKey({key})));
+        has.map(key => this._blindString(key)));
     }
     return query;
-  }
-
-  /**
-   * Blinds an attribute key using the internal HMAC API.
-   *
-   * @param {String} key an attribute key.
-   *
-   * @return {Promise<String>} resolves to the blinded attribute name.
-   */
-  async _blindAttributeKey({key}) {
-    return this.hmac.sign({data: key});
   }
 
   /**
@@ -198,14 +189,32 @@ export class IndexHelper {
    *
    * @param {String} key a key associated with a value.
    * @param {Any} value the value associated with the key for the attribute.
+   * @param {Boolean} unique `true` to include a unique flag on the output.
    *
    * @return {Promise<Object>} resolves to an object `{name, value}`.
    */
-  async _blindAttribute({key, value}) {
+  async _blindAttribute({key, value, unique = false}) {
     // salt values with key to prevent cross-key leakage
     value = JSON.stringify({key: value});
     const [blindedName, blindedValue] = await Promise.all(
-      [this.hmac.sign({data: key}), this.hmac.sign({data: value})]);
-    return {name: blindedName, value: blindedValue};
+      [this._blindString(key), this._blindString(value)]);
+    const result = {name: blindedName, value: blindedValue};
+    if(unique) {
+      result.unique = true;
+    }
+    return result;
+  }
+
+  /**
+   * Blinds a string using the internal HMAC API.
+   *
+   * @param {String} value the value to blind.
+   *
+   * @return {Promise<String>} resolves to the blinded value.
+   */
+  async _blindString(value) {
+    // convert value to Uint8Array
+    const data = new TextEncoder().encode(value);
+    return this.hmac.sign({data});
   }
 }
