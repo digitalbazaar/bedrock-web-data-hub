@@ -40,9 +40,11 @@ export class DataHub {
    *
    * @param {Array|Object} attribute the attribute name or an array of
    *   attribute names.
+   * @param {Boolean} unique `true` if attribute values should be considered
+   *   unique, `false` if not (default: `false`).
    */
-  ensureIndex({attribute}) {
-    return this.indexHelper.ensureIndex({attribute});
+  ensureIndex({attribute, unique = false}) {
+    return this.indexHelper.ensureIndex({attribute, unique});
   }
 
   /**
