@@ -3,7 +3,7 @@
  */
 'use strict';
 
-import * as base64url from 'base64url-universal';
+import base64url from 'base64url-universal';
 import * as fipsAlgorithm from './algorithms/fips.js';
 import * as recAlgorithm from './algorithms/recommended.js';
 
