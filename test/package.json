@@ -28,7 +28,7 @@
     "bedrock-test": "^2.0.0",
     "bedrock-web-data-hub": "file:..",
     "bedrock-web-kms": "^1.0.0",
-    "bedrock-web-mock-data-hub-storage": "https://github.com/digitalbazaar/bedrock-web-mock-data-hub-storage#refactor",
+    "bedrock-web-mock-data-hub-storage": "^2.0.0",
     "bedrock-web-mock-kms-http": "^1.0.0",
     "pretender": "^2.1.1"
   }
