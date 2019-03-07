@@ -12,7 +12,7 @@ export class DataHub {
    * Creates a new DataHub instance. The storage for the data hub must already
    * exist and have an HTTPS API at the given `baseUrl`.
    *
-   * @param {String} baseUrl an optional endpoint for the data hub storage.
+   * @param {String} [baseUrl='/data-hubs'] an endpoint for data hub storage.
    * @param {Object} config the data hub's configuration document.
    * @param {kek} kek a KEK API for wrapping content encryption keys.
    * @param {hmac} hmac an HMAC API for blinding indexable attributes.
