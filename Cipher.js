@@ -20,8 +20,9 @@ export class Cipher {
    * indicates whether a FIPS-compliant algorithm or the latest recommended
    * algorithm will be used.
    *
-   * @param {String} version `fips` to use a FIPS-compliant algorithm,
-   *   `recommended` to use the latest recommended algorithm when encrypting.
+   * @param {String} [version='recommended'] `fips` to use a FIPS-compliant
+   *   algorithm, `recommended` to use the latest recommended algorithm when
+   *   encrypting.
    *
    * @return {Cipher}.
    */
@@ -48,8 +49,8 @@ export class Cipher {
    * @param {Uint8Array|String} data the data to encrypt.
    * @param {Object} kek a key encryption key API with `id`, `wrap`, and
    *   `unwrap`.
-   * @param {Array} recipients an optional array of recipients for the
-   *   encrypted content.
+   * @param {Array} [recipients=[]] an array of recipients for the encrypted
+   *   content.
    * @param {String} [wrappedCek] a base64url-encoded CEK.
    *
    * @return {Promise<Object>} resolves to a JWE.
