@@ -17,11 +17,13 @@ export class DataHubService {
   }
 
   /**
-   * @method create
+   * Creates a new data hub using the given configuration.
+   *
    * @param {Object} options
-   * @param {string} options.baseUrl - the base baseUrl
-   * @param {string} options.config - the data hub's configuration
-   * @description returns the configuration for the newly created data hub.
+   * @param {String} options.url the url to post the configuration to.
+   * @param {String} options.config the data hub's configuration.
+   *
+   * @return {Object} the configuration for the newly created data hub.
    */
   async create({url = this.config.urls.base, config}) {
     // TODO: more robustly validate `config` (`kek`, `hmac`, if present, etc.)
@@ -36,11 +38,13 @@ export class DataHubService {
   }
 
   /**
-   * @method get
+   * Get the configuration for a data hub.
+   *
    * @param {Object} options
-   * @param {string} options.baseUrl - the base baseUrl
-   * @param {string} options.id - the data hub's ID
-   * @description returns a data hub (represented by its configuration).
+   * @param {String} options.baseUrl the base baseUrl.
+   * @param {String} options.id the data hub's ID.
+   *
+   * @return {Object} the configuration for the data hub.
    */
   async get({baseUrl = this.config.urls.base, id}) {
     const response = await axios.get(baseUrl + '/' + id, {headers});
@@ -48,11 +52,13 @@ export class DataHubService {
   }
 
   /**
-   * @method get
+   * Get the primary data hub for the given controller.
+   *
    * @param {Object} options
-   * @param {string} options.baseUrl - the base baseUrl
-   * @param {string} options.controller - the ID of the controller
-   * @description returns a controller's primary data hub.
+   * @param {String} options.baseUrl the base baseUrl.
+   * @param {String} options.controller the ID of the controller.
+   *
+   * @return {Object} the controller's primary data hub configuration.
    */
   async getPrimary({baseUrl = this.config.urls.base, controller}) {
     const results = await this.getAll({baseUrl, controller, primary: true});
@@ -60,16 +66,16 @@ export class DataHubService {
   }
 
   /**
-   * @method getAll
+   * Get all data hub configurations matching a query.
+   *
    * @param {Object} options
-   * @param {string} options.baseUrl - the base baseUrl
-   * @param {string} options.controller - the data hub's controller
-   * @param {string} options.primary - true to return primary data hubs.
-   * @param {string} options.after - a data hub's ID
-   * @param {number} options.limit - how many data hub configs to return
-   * @return {Array} data
-   * @description returns all data hubs (represented by their configuration
-   *   documents) that match the given query parameters.
+   * @param {String} options.baseUrl the base baseUrl.
+   * @param {String} options.controller the data hub's controller.
+   * @param {String} options.primary true to return primary data hubs.
+   * @param {String} options.after a data hub's ID.
+   * @param {Number} options.limit how many data hub configs to return.
+   *
+   * @return {Array} the matching data hub configurations.
    */
   async getAll(
     {baseUrl = this.config.urls.base, controller, primary, after, limit}) {
@@ -79,17 +85,18 @@ export class DataHubService {
   }
 
   /**
-   * @method update
-   * @param {Object} options
-   * @param {string} options.baseUrl
-   * @param {string} options.id - an data hub's id
-   * @param {number} options.sequence - a data hub config's sequence number
-   * @param {Array<Object>} options.patch - a JSON patch per RFC6902
-   * @return {Void}
-   * @description updates an data hub config via a json patch as specified by:
+   * Updates a data hub configuration via a JSON patch as specified by:
    * [json patch format]{@link https://tools.ietf.org/html/rfc6902}
    * [we use fast-json]{@link https://www.npmjs.com/package/fast-json-patch}
    * to apply json patches.
+   *
+   * @param {Object} options
+   * @param {String} options.baseUrl
+   * @param {String} options.id an data hub's ID.
+   * @param {Number} options.sequence a data hub config's sequence number.
+   * @param {Array<Object>} options.patch a JSON patch per RFC6902.
+   *
+   * @return {Void}
    */
   async update({baseUrl = this.config.urls.base, id, sequence, patch}) {
     const patchHeaders = {'Content-Type': 'application/json-patch+json'};
@@ -98,13 +105,14 @@ export class DataHubService {
   }
 
   /**
-   * @method setStatus
+   * Sets the status of a data hub.
+   *
    * @param {Object} options
    * @param {string} options.baseUrl
-   * @param {string} options.id - a data hub id
-   * @param {string} options.status - a string that is either active or deleted
+   * @param {string} options.id a data hub ID.
+   * @param {string} options.status either `active` or `deleted`.
+   *
    * @return {Void}
-   * @description changes a data hub's status to the given status.
   */
   async setStatus({baseUrl = this.config.urls.base, id, status}) {
     // FIXME: add ability to disable data hub access or to revoke all ocaps
