@@ -1,6 +1,6 @@
 # bedrock-web-data-hub ChangeLog
 
-## 0.0.0 - 2018-xx-xx
+## 1.0.0 - 2019-03-07
 
 ### Added
 - Add core files.
