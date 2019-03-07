@@ -30,7 +30,7 @@ export class Cipher {
       throw new TypeError('"version" must be a string.');
     }
     if(!VERSIONS.includes(version)) {
-      throw new Error(`Unsupported version "${version}"`);
+      throw new Error(`Unsupported version "${version}".`);
     }
     this.version = version;
     this.algorithm = version === 'fips' ? fipsAlgorithm : recAlgorithm;
@@ -50,7 +50,7 @@ export class Cipher {
    *   `unwrap`.
    * @param {Array} recipients an optional array of recipients for the
    *   encrypted content.
-   * @param {String} wrappedCek an optional base64url-encoded CEK.
+   * @param {String} [wrappedCek] a base64url-encoded CEK.
    *
    * @return {Promise<Object>} resolves to a JWE.
    */
