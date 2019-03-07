@@ -1,6 +1,6 @@
 {
   "name": "bedrock-web-data-hub",
-  "version": "0.1.0-0",
+  "version": "1.0.0",
   "description": "Data hubs for Bedrock Web apps",
   "main": "index.js",
   "dependencies": {
