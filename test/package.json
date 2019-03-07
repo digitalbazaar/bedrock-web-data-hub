@@ -29,7 +29,7 @@
     "bedrock-web-data-hub": "file:..",
     "bedrock-web-kms": "https://github.com/digitalbazaar/bedrock-web-kms#initial",
     "bedrock-web-mock-data-hub-storage": "https://github.com/digitalbazaar/bedrock-web-mock-data-hub-storage#refactor",
-    "bedrock-web-mock-kms-http": "https://github.com/digitalbazaar/bedrock-web-mock-kms-http#initial",
+    "bedrock-web-mock-kms-http": "^1.0.0",
     "pretender": "^2.1.1"
   }
 }
