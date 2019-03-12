@@ -69,7 +69,11 @@ export class IndexHelper {
     const blindOps = [];
     for(const [key, unique] of indexes.entries()) {
       const value = content[key];
-      if(value !== undefined) {
+      if(Array.isArray(value)) {
+        for(const v of value) {
+          blindOps.push(this._blindAttribute({key, value: v, unique}));
+        }
+      } else if(value !== undefined) {
         blindOps.push(this._blindAttribute({key, value, unique}));
       }
     }

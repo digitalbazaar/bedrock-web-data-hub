@@ -1,5 +1,10 @@
 # bedrock-web-data-hub ChangeLog
 
+## 1.0.1 - 2019-03-xx
+
+### Fixed
+- Fix indexing of values in an array.
+
 ## 1.0.0 - 2019-03-07
 
 ### Added
