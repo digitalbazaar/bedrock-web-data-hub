@@ -20,7 +20,10 @@ export class DataHubService {
    * Creates a new data hub using the given configuration.
    *
    * @param {Object} options
+   *
    * @param {String} options.url the url to post the configuration to.
+   * @see https://github.com/digitalbazaar/bedrock-data-hub-storage
+   *
    * @param {String} options.config the data hub's configuration.
    *
    * @return {Object} the configuration for the newly created data hub.
