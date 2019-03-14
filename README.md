@@ -1,6 +1,4 @@
-# Web Based Bedrock Data Hub Adapter _(bedrock-web-data-hub)_
-
-[![Build Status](https://travis-ci.org/digitalbazaar/bedrock-web-data-hub.png?branch=master)](https://travis-ci.org/digitalbazaar/bedrock-web-data-hub)
+# Web Based Bedrock Data Hub Client _(bedrock-web-data-hub)_
 
 > A Javascript library for Bedrock web apps, for interfacing with a remote Data Hub server
 
@@ -16,7 +14,7 @@
 
 ## Background
 
-This library is an adapter that Bedrock web apps can use to interface with
+This library is a client that Bedrock web apps can use to interface with
 remote Data Hub servers (for example, it's used by the 
 [Bedrock VC Store](https://github.com/digitalbazaar/bedrock-web-vc-store) lib).
 
@@ -51,14 +49,25 @@ cd ..
 
 ### Creating and registering a DataHub config
 
-Setting up a Data Hub Service requires configuring a Key Management Service
-([`bedrock-web-kms`](https://github.com/digitalbazaar/bedrock-web-kms)) instance.
+First, create a `DataHubService` instance:
 
 ```js
 import {AccountMasterKey, KmsService} from 'bedrock-web-kms';
 import {DataHub, DataHubService} from 'bedrock-web-data-hub';
 
-// First, create a Master Key (via a key management service)
+// Create a `DataHubService` instance (which can be used to create DataHub instances)
+const dhs = new DataHubService();
+```
+
+Although you can use Data Hubs while doing your own key management, we
+recommend that you set up a Key Management Service
+([`bedrock-web-kms`](https://github.com/digitalbazaar/bedrock-web-kms)) instance
+first.
+
+Optional:
+
+```js
+// Create a Master Key (via a key management service)
 const kmsService = new KmsService();
 // TODO: Explain kmsPlugin and accountId
 const masterKey = await AccountMasterKey.fromSecret({secret, accountId, kmsService, kmsPlugin});
@@ -67,8 +76,6 @@ const masterKey = await AccountMasterKey.fromSecret({secret, accountId, kmsServi
 const kek = await masterKey.generateKey({type: 'kek'}); // Key Encryption Key
 const hmac = await masterKey.generateKey({type: 'hmac'});
 
-// Create a `DataHubService` instance (which can be used to create DataHub instances)
-const dhs = new DataHubService();
 ```
 
 Now you can create and register a new `DataHub` configuration:
