@@ -30,6 +30,7 @@
     "bedrock-web-kms": "^1.0.0",
     "bedrock-web-mock-data-hub-storage": "^2.0.0",
     "bedrock-web-mock-kms-http": "^1.0.0",
+    "data-hub-client": "github:digitalbazaar/data-hub-client#tests",
     "pretender": "^2.1.1"
   }
 }

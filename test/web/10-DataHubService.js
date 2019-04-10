@@ -1,7 +1,7 @@
 /*!
  * Copyright (c) 2018-2019 Digital Bazaar, Inc. All rights reserved.
  */
-import {DataHubService} from 'bedrock-web-data-hub';
+import {DataHubService} from 'data-hub-client';
 import {mock} from './mock.js';
 
 describe('DataHubService', () => {

@@ -2,7 +2,7 @@
  * Copyright (c) 2018-2019 Digital Bazaar, Inc. All rights reserved.
  */
 import Pretender from 'pretender';
-import {DataHub, DataHubService} from 'bedrock-web-data-hub';
+import {DataHubClient, DataHubService} from 'data-hub-client';
 import {MockStorage} from 'bedrock-web-mock-data-hub-storage';
 import {MockKmsService} from 'bedrock-web-mock-kms-http';
 import {AccountMasterKey, KmsService} from 'bedrock-web-kms';
@@ -74,5 +74,5 @@ mock.createDataHub = async (
     config.primary = true;
   }
   config = await dhs.create({config});
-  return new DataHub({config, kek, hmac});
+  return new DataHubClient({config, kek, hmac});
 };

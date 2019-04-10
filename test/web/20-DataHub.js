@@ -1,7 +1,7 @@
 /*!
  * Copyright (c) 2018-2019 Digital Bazaar, Inc. All rights reserved.
  */
-import {DataHub} from 'bedrock-web-data-hub';
+import {DataHubClient} from 'data-hub-client';
 import {mock} from './mock.js';
 
 describe('DataHub', () => {
@@ -14,7 +14,7 @@ describe('DataHub', () => {
 
   it('should create a data hub', async () => {
     const dataHub = await mock.createDataHub();
-    const result = dataHub instanceof DataHub;
+    const result = dataHub instanceof DataHubClient;
     result.should.equals(true);
   });
 
