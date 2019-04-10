@@ -47,5 +47,10 @@
         "browser": "lib/browser.js"
       }
     }
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-digitalbazaar": "^2.0.0",
+    "eslint-plugin-jsdoc": "^4.8.3"
   }
 }
