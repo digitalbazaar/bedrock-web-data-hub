@@ -1,3 +1,9 @@
+# Archived
+Note: This repo is obsolete, instead see:
+
+https://github.com/digitalbazaar/edv-client
+https://github.com/digitalbazaar/bedrock-web-pouch-edv
+
 # Web Based Bedrock Data Hub Client _(bedrock-web-data-hub)_
 
 > A Javascript library for Bedrock web apps, for interfacing with a remote Data Hub server
